@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ZzaDesktop.Customers
 {
-    class SimpleEditableCustomer : BindableBase
+    class SimpleEditableCustomer : ValidatableBindableBase
     {
 
         private Guid _Id;
@@ -19,7 +20,7 @@ namespace ZzaDesktop.Customers
 
 
         private string _FirstName;
-
+        [Required]
         public string FirstName
         {
             get { return _FirstName; }
@@ -28,7 +29,7 @@ namespace ZzaDesktop.Customers
 
 
         private string _LastName;
-
+        [Required]
         public string LastName
         {
             get { return _LastName; }
@@ -37,7 +38,7 @@ namespace ZzaDesktop.Customers
 
 
         private string _Email;
-
+        [EmailAddress]
         public string Email
         {
             get { return _Email; }
@@ -46,7 +47,7 @@ namespace ZzaDesktop.Customers
 
 
         private string _Phone;
-
+        [Phone]
         public string Phone
         {
             get { return _Phone; }

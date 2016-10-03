@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,8 +11,12 @@ namespace ZzaDesktop.Customers
 {
     class AddEditCustomerViewModel : BindableBase
     {
-        public AddEditCustomerViewModel()
+        ICustomersRepository _repo;
+
+        public AddEditCustomerViewModel(ICustomersRepository repo)
         {
+            _repo = repo;
+
             CancelCommand = new RelayCommand(OnCancel);
             SaveCommand = new RelayCommand(OnSave, CanSave);
         }
@@ -34,8 +39,17 @@ namespace ZzaDesktop.Customers
         public void SetCustomer(Customer cust)
         {
             _editingCustomer = cust;
+
+            //if we've just clicked the edit button then don't trigger validation when fields are populated (will cause nullException if not done so!)
+            if (Customer != null) Customer.ErrorsChanged -= RaiseCanExecuteChanged;
             Customer = new SimpleEditableCustomer();
+            Customer.ErrorsChanged += RaiseCanExecuteChanged;
             CopyCustomer(cust, Customer);
+        }
+
+        private void RaiseCanExecuteChanged(object sender, EventArgs e)
+        {
+            SaveCommand.RaiseCanExecuteChanged();
         }
 
         public RelayCommand CancelCommand { get; private set; }
@@ -49,8 +63,13 @@ namespace ZzaDesktop.Customers
             Done();
         }
 
-        private void OnSave()
+        private async void OnSave()
         {
+            UpdateCustomer(Customer, _editingCustomer);
+            if (EditMode)
+                await _repo.UpdateCustomerAsync(_editingCustomer);
+            else
+                await _repo.AddCustomerAsync(_editingCustomer);
             Done();
         }
 
