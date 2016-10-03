@@ -74,7 +74,5 @@ namespace ZzaDesktop
             _addEditViewModel.SetCustomer(cust);
             CurrentViewModel = _addEditViewModel;
         }
-
-
     }
 }
