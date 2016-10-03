@@ -11,8 +11,12 @@ namespace ZzaDesktop.Customers
 {
     class AddEditCustomerViewModel : BindableBase
     {
-        public AddEditCustomerViewModel()
+        ICustomersRepository _repo;
+
+        public AddEditCustomerViewModel(ICustomersRepository repo)
         {
+            _repo = repo;
+
             CancelCommand = new RelayCommand(OnCancel);
             SaveCommand = new RelayCommand(OnSave, CanSave);
         }
@@ -59,8 +63,13 @@ namespace ZzaDesktop.Customers
             Done();
         }
 
-        private void OnSave()
+        private async void OnSave()
         {
+            UpdateCustomer(Customer, _editingCustomer);
+            if (EditMode)
+                await _repo.UpdateCustomerAsync(_editingCustomer);
+            else
+                await _repo.AddCustomerAsync(_editingCustomer);
             Done();
         }
 

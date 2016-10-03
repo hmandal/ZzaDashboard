@@ -7,20 +7,27 @@ using Zza.Data;
 using ZzaDesktop.Customers;
 using ZzaDesktop.OrderPrep;
 using ZzaDesktop.Orders;
+using ZzaDesktop.Services;
+using Microsoft.Practices.Unity;
 
 namespace ZzaDesktop
 {
     class MainWindowViewModel : BindableBase
     {
-        private CustomerListViewModel _customerListViewModel = new CustomerListViewModel();
         private OrderViewModel _orderViewModel = new OrderViewModel();
         private OrderPrepViewModel _orderPrepViewModel = new OrderPrepViewModel();
-        private AddEditCustomerViewModel _addEditViewModel = new AddEditCustomerViewModel();
 
         private BindableBase _CurrentViewModel;
 
+        //for DI
+        //private ICustomersRepository _repo = new CustomersRepository();
+        private CustomerListViewModel _customerListViewModel;
+        private AddEditCustomerViewModel _addEditViewModel;
+
         public MainWindowViewModel()
         {
+            _customerListViewModel = ContainerHelper.Container.Resolve<CustomerListViewModel>();
+            _addEditViewModel = ContainerHelper.Container.Resolve<AddEditCustomerViewModel>();
             NavCommand = new RelayCommand<string>(OnNav);
             _customerListViewModel.PlaceOrderRequested += NavToOrder;
             _customerListViewModel.AddCustomerRequested += NavToAddCustomer;
